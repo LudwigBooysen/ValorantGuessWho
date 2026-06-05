@@ -1,206 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Card Grid (JSON Driven)</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Card Grid</title>
+        <link rel="stylesheet" href="styles/style.css">
+        <link rel="icon" type="image/x-icon" href="https://img.icons8.com/?size=100&amp;id=aUZxT3Erwill&amp;format=png&amp;color=000000">
+    </head>
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #111;
-    display: box;
-    justify-content: center;
-}
+    <body>
 
-.container {
-    width: 90%;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
+        <h1>VALORANT Guess Who?</h1>
 
-.card {
-    perspective: 1000px;
-    position: relative;
-}
+        <div class="container" id="container"></div>
 
-.card-inner {
-    position: relative;
-    width: 100%;
-    height: 220px;
-    transition: all 0.6s;
-    transform-style: preserve-3d;
-    cursor: pointer;
-}
+        <button onclick="reload()">Reload</button>
+        <button onclick="toggleRand()">Toggle Random Card</button>
 
-.card.flipped .card-inner {
-    transform: rotateY(180deg);
-}
+        <script src="scripts/script.js"></script>
 
-.card.crossed {
-    opacity: 0.4;
-}
+        <footer>
+            Enjoying the site?
 
-.card.crossed::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: red;
-    transform: rotate(-20deg);
-}
+            <br><br>
 
-.card-front, .card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    overflow: hidden;
-    backface-visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    background: #222;
-    color: white;
-}
+            Support development:
+            <br><br>
+            <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="ludwigbooyv" data-color="#BD5FFF" data-emoji="☕"  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+            <br><br><br><br>
 
-.chosen {
-    border: 3px solid gold;
-    border-radius: 10px;
-}
-
-img {
-    width: 100%;
-    height: 60%;
-    object-fit: contain;
-}
-
-h3, h6 {
-    margin: 10px;
-    text-align: center;
-}
-
-p {
-    position: absolute;
-    font-size: 82px;
-}
-
-.card-back {
-    justify-content: center;
-    align-items: center;
-    transform: rotateY(180deg);
-}
-
-button {
-    margin: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-</style>
-<link rel="icon" type="image/x-icon" href="https://img.icons8.com/?size=100&amp;id=aUZxT3Erwill&amp;format=png&amp;color=000000">
-</head>
-
-<body>
-
-<div class="container" id="container"></div>
-
-<button onclick="reload()">Reload</button>
-<button onclick="toggleRand()">Toggle Random Card</button>
-
-<script>
-// change this to your JSON file path
-const DATA_URL = "cards.json";
-
-let cards = 0;
-let showChosen = true;
-let randomCard = 0;
-
-function reload() {
-    window.location.reload();
-}
-
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function toggleRand() {
-    if (showChosen) {
-        container.childNodes[randomCard].classList.remove("chosen");
-        showChosen = false;
-    } else {
-        container.childNodes[randomCard].classList.add("chosen");
-        showChosen = true;
-    }
-}
-
-async function loadCards() {
-    const res = await fetch(DATA_URL);
-    const data = await res.json();
-
-    const container = document.getElementById("container");
-
-    data.cards.forEach((item, index) => {
-        const card = document.createElement("div");
-        cards++;
-
-        card.className = "card";
-
-        card.innerHTML = `
-            <div class="card-inner">
-                <div class="card-front">
-                    <img src="${item.image}" alt="img">
-                    <h3>${item.text}</h3>
-                    <h6>${item.role}</h6>
-                </div>
-                <div class="card-back">
-                    <img src="${item.image}" alt="img">
-                    <h3>${item.text}</h3>
-                    <h6>${item.role}</h6>
-                    <p>❌</p>
-                </div>
-            </div>
-        `;
-
-        card.addEventListener("click", () => {
-            card.classList.toggle("flipped");
-        });
-
-        card.addEventListener("contextmenu", (e) => {
-            e.preventDefault();
-            card.classList.toggle("crossed");
-        });
-
-        container.appendChild(card);
-    });
-
-    randomCard = getRandomInt(0, cards - 1);
-
-    container.childNodes[randomCard].classList.add("chosen");
-
-}
-
-loadCards();
-</script>
-
-    <footer>
-        Enjoying the site?
-
-        <br><br>
-
-        Support development:
-        <br><br>
-        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="ludwigbooyv" data-color="#BD5FFF" data-emoji="☕"  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
-
-        <br><br><br><br>
-
-        VALORANT is a trademark of Riot Games.
-        This project is not affiliated with or endorsed by Riot Games.
-    </footer>
-</body>
+            VALORANT is a trademark of Riot Games.
+            This project is not affiliated with or endorsed by Riot Games.
+        </footer>
+    </body>
 </html>
